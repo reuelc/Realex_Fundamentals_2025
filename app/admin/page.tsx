@@ -8,12 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Shield, Loader2, FileText, CheckCircle, XCircle, Download, Edit, Trash2, PlusCircle } from "lucide-react"
-import * as pdfjs from "pdfjs-dist"
 import type { QuizPart, QuizQuestion } from "@/lib/types"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const ADMIN_PASSWORD = "super-secret-admin-password"
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -41,6 +39,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     if(isAuthenticated) {
+        // Dynamically import pdfjs and set worker
+        import("pdfjs-dist").then(pdfjs => {
+            pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+        })
+
         fetch('/quiz-data.json')
             .then(res => res.json())
             .then(data => setQuizData(data))
@@ -73,6 +76,8 @@ export default function AdminPage() {
     if (!file) return
     setStatus("parsing")
     setFeedback("Starting PDF parsing...")
+
+    const pdfjs = await import("pdfjs-dist");
 
     const reader = new FileReader()
     reader.onload = async (event) => {
