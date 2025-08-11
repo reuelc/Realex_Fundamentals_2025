@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { quizParts } from "@/lib/quiz-data"
+import quizPartsData from "@/lib/quiz-data.json"
 import Quiz from "@/components/Quiz"
 import type { QuizPart } from "@/lib/types"
 
@@ -11,6 +11,7 @@ export default function TestPage({ params }: { params: { part: string } }) {
   const router = useRouter()
 
   useEffect(() => {
+    const quizParts: QuizPart[] = quizPartsData
     const part = quizParts.find((p) => p.id === params.part)
     if (part) {
       setQuizPart(part)

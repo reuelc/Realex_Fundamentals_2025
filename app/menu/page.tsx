@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { quizParts } from "@/lib/quiz-data"
-import { BookOpenIcon, ArrowLeftIcon, LogOutIcon, GraduationCapIcon } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import quizParts from "@/lib/quiz-data.json"
+import { BookOpen, ArrowRight, LogOut, GraduationCap } from "lucide-react"
 
 export default function MenuPage() {
   const router = useRouter()
@@ -14,58 +14,71 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 p-4">
-      <div className="absolute top-4 right-4">
-        <Button variant="ghost" size="sm" onClick={handleExit} className="text-gray-500 hover:text-gray-700">
-          <LogOutIcon className="h-4 w-4 mr-1" /> Exit
-        </Button>
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-2">
+              <GraduationCap className="h-8 w-8 text-primary" />
+              <span className="text-xl font-semibold text-gray-900 dark:text-gray-50">
+                REALEX Practice Test
+              </span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleExit}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Exit
+            </Button>
+          </div>
+        </div>
+      </header>
 
-      <div className="w-full max-w-3xl">
-        <div className="text-center mb-8">
-          <GraduationCapIcon className="h-16 w-16 mx-auto text-blue-600 mb-4" />
-          <h1 className="text-3xl font-bold text-gray-800">REALEX Practice Test</h1>
-          <p className="text-gray-600 mt-2">REA Licensure Examination</p>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-50 sm:text-5xl">
+            Select a Practice Test
+          </h1>
+          <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
+            Choose a section to begin your practice session.
+          </p>
         </div>
 
-        <Card className="w-full shadow-lg border-blue-100">
-          <CardHeader className="border-b border-gray-100 bg-white rounded-t-lg">
-            <h2 className="text-xl font-semibold text-gray-800">Select a Practice Test</h2>
-            <p className="text-gray-500 text-sm">Choose one of the following test sections to begin your practice</p>
-          </CardHeader>
-
-          <CardContent className="space-y-4 p-6 bg-white rounded-b-lg">
-            {quizParts.map((part) => (
-              <div key={part.id} className="group">
-                <Button
-                  onClick={() => router.push(`/test/${part.id}`)}
-                  className="w-full h-auto py-6 px-4 flex items-center justify-start bg-white hover:bg-blue-50 text-left border border-gray-200 rounded-lg shadow-sm group-hover:shadow-md transition-all duration-200"
-                  variant="ghost"
-                >
-                  <div className="bg-blue-100 p-3 rounded-full mr-4 group-hover:bg-blue-200 transition-colors">
-                    <BookOpenIcon className="h-6 w-6 text-blue-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {quizParts.map((part) => (
+            <Card
+              key={part.id}
+              onClick={() => router.push(`/test/${part.id}`)}
+              className="group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-800"
+            >
+              <CardHeader className="flex-row items-center space-x-4 pb-4">
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <BookOpen className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors">
+                    {part.title}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="mb-4">
+                  Test your knowledge with {part.questions.length} questions.
+                </CardDescription>
+                <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+                  <span>Approx. {Math.round(part.questions.length * 0.75)} mins</span>
+                  <div className="flex items-center text-primary font-semibold">
+                    Start Test
+                    <ArrowRight className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-1" />
                   </div>
-                  <div>
-                    <div className="font-medium text-lg text-gray-800">{part.title}</div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {part.questions.length} questions • Approximately {Math.round(part.questions.length * 0.75)}{" "}
-                      minutes
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
 
-            <div className="flex justify-center mt-6">
-              <Button variant="outline" onClick={handleExit} className="text-gray-600 border-gray-300">
-                <ArrowLeftIcon className="mr-2 h-4 w-4" /> Back to Login
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mt-6 text-sm text-gray-500">© 2025 REALEX Practice Test</div>
-      </div>
+      <footer className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+        © {new Date().getFullYear()} REALEX Practice Test. All rights reserved.
+      </footer>
     </div>
   )
 }

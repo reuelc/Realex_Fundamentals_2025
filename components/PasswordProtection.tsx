@@ -5,15 +5,16 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { LockIcon, GraduationCapIcon } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { LockIcon, GraduationCapIcon, AlertCircle } from "lucide-react"
 
-const CORRECT_PASSWORD = "9646"
+// In a real-world application, this should be an environment variable
+const CORRECT_PASSWORD = "rea-2025-special-access"
 
 export default function PasswordProtection() {
   const [password, setPassword] = useState("")
-  const [error, setError] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,55 +22,62 @@ export default function PasswordProtection() {
     if (password === CORRECT_PASSWORD) {
       router.push("/menu")
     } else {
-      setError(true)
-      setTimeout(() => setError(false), 3000)
+      setError("The password you entered is incorrect. Please try again.")
+      setTimeout(() => setError(""), 3000)
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
-      <div className="w-full max-w-md px-4">
-        <div className="text-center mb-6">
-          <GraduationCapIcon className="h-16 w-16 mx-auto text-blue-600 mb-4" />
-          <h1 className="text-3xl font-bold text-gray-800">REALEX Practice Test</h1>
-          <p className="text-gray-600 mt-2">REA Licensure Examination</p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="w-full max-w-sm px-4">
+        <div className="text-center mb-8">
+          <GraduationCapIcon className="h-12 w-12 mx-auto text-primary mb-4" />
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+            REALEX Practice Test
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Real Estate Appraiser Licensure Examination
+          </p>
         </div>
 
-        <Card className="shadow-lg border-blue-100">
-          <CardHeader className="space-y-1 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-center text-gray-800">Welcome</h2>
-            <p className="text-center text-gray-500">Please enter the password to access the practice tests</p>
+        <Card className="shadow-md dark:bg-gray-800">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-center">Welcome</CardTitle>
+            <CardDescription className="text-center text-gray-500 dark:text-gray-400">
+              Enter the password to access the practice tests.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <LockIcon className="h-5 w-5 text-gray-400" />
-                </div>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 py-6 text-center text-lg"
+                  className="h-12 text-base"
                 />
               </div>
 
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>Incorrect password. Please try again.</AlertDescription>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Authentication Failed</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full py-6 bg-blue-600 hover:bg-blue-700 text-lg font-medium">
+              <Button type="submit" className="w-full h-12 text-base font-semibold">
                 Access Tests
               </Button>
-
-              <p className="text-sm text-center text-gray-500 mt-4">© 2025 REALEX Practice Test</p>
             </form>
           </CardContent>
         </Card>
+        <div className="text-xs text-center text-gray-500 mt-8">
+            <p>© {new Date().getFullYear()} REALEX Practice Test. All rights reserved.</p>
+            <a href="/admin" className="hover:underline">Admin Login</a>
+        </div>
       </div>
     </div>
   )
